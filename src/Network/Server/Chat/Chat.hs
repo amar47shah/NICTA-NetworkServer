@@ -54,4 +54,4 @@ process ::
   ChatCommand
   -> Chat ()
 process =
-  error "todo"
+  error "Chat.process"
