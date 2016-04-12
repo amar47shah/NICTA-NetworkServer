@@ -63,21 +63,19 @@ data Command =
 --
 -- >>> command "Move i"
 -- Unknown "Move i"
-command ::
-  String
-  -> Command
+command :: String -> Command
 command z =
-  fromMaybe (Unknown z) interpreted
+  fromMaybe (Unknown z) (interpreted z)
       where
   trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
-  p = (trim <$>) . prefixThen ((==) `on` toLower) z
-  interpreted = asum [ Move <$> (p "MOVE " >>= sPosition)
-                     , Current <$ p "GAME"
-                     , Finished <$ p "FINISHED"
-                     , Chat <$> p "CHAT"
-                     , Turn <$ p "TURN"
-                     , At <$> (p "AT" >>= sPosition)
-                     ]
+  p = ((trim <$>) .) . prefixThen ((==) `on` toLower)
+  interpreted z' = asum [ Move <$> (p z' "MOVE " >>= sPosition)
+                        , Current <$ p z' "GAME"
+                        , Finished <$ p z' "FINISHED"
+                        , Chat <$> p z' "CHAT"
+                        , Turn <$ p z' "TURN"
+                        , At <$> (p z' "AT" >>= sPosition)
+                        ]
 
 -- |
 --
