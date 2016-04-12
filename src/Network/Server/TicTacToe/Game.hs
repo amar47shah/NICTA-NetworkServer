@@ -11,7 +11,7 @@ import Data.Char(isSpace, toLower, toUpper)
 import Data.Function(on)
 import Data.IORef(readIORef, atomicModifyIORef)
 import Data.Maybe(fromMaybe)
-import Data.Foldable(msum, find)
+import Data.Foldable(asum, find)
 import Data.Set(Set)
 import Control.Applicative((<$), (<$>))
 import System.IO(hGetLine, hPutStrLn)
@@ -67,19 +67,17 @@ command ::
   String
   -> Command
 command z =
-  let p l = reverse . dropWhile isSpace . reverse . dropWhile isSpace <$> prefixThen ((==) `on` toLower) l z
-  in Unknown z `fromMaybe` msum [
-                                  do m <- p "MOVE "
-                                     q <- sPosition m
-                                     return (Move q)
-                                , Current <$ p "GAME"
-                                , Finished <$ p "FINISHED"
-                                , Chat <$> p "CHAT"
-                                , Turn <$ p "TURN"
-                                , do a <- p "AT"
-                                     q <- sPosition a
-                                     return (At q)
-                                ]
+  fromMaybe (Unknown z) interpreted
+      where
+  trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
+  p = (trim <$>) . prefixThen ((==) `on` toLower) z
+  interpreted = asum [ Move <$> (p "MOVE " >>= sPosition)
+                     , Current <$ p "GAME"
+                     , Finished <$ p "FINISHED"
+                     , Chat <$> p "CHAT"
+                     , Turn <$ p "TURN"
+                     , At <$> (p "AT" >>= sPosition)
+                     ]
 
 -- |
 --
