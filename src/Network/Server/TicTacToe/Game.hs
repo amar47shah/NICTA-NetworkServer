@@ -90,50 +90,22 @@ command z =
 --
 -- > sPosition "x"
 -- Nothing
-sPosition ::
-  String
-  -> Maybe Position
+sPosition :: String -> Maybe Position
 sPosition s =
-  let table = [
-                (
-                  ["1", "NW"]
-                , NW
-                )
-              , (
-                  ["2", "N"]
-                , N
-                )
-              , (
-                  ["3", "NE"]
-                , NE
-                )
-              , (
-                  ["4", "W"]
-                , W
-                )
-              , (
-                  ["5", "C"]
-                , C
-                )
-              , (
-                  ["6", "E"]
-                , E
-                )
-              , (
-                  ["7", "SW"]
-                , SW
-                )
-              , (
-                  ["8", "S"]
-                , S
-                )
-              , (
-                  ["9", "SE"]
-                , SE
-                )
-              ]
-      toUppers = map toUpper
-  in fmap snd . find (\(t, _) -> elem (toUppers s) (toUppers <$> t)) $ table
+  snd <$> find (match s) table
+      where
+  match s' (t, _) = toUppers s' `elem` fmap toUppers t
+  toUppers = map toUpper
+  table = [ (["1", "NW"], NW)
+          , (["2", "N" ], N )
+          , (["3", "NE"], NE)
+          , (["4",  "W"],  W)
+          , (["5", "C" ], C )
+          , (["6",  "E"],  E)
+          , (["7", "SW"], SW)
+          , (["8", "S" ], S )
+          , (["9", "SE"], SE)
+          ]
 
 currentBoard ::
   Game Board
