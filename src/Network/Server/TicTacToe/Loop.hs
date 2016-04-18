@@ -7,7 +7,6 @@ import Data.IORef(IORef, newIORef, readIORef)
 import Data.Foldable(Foldable, mapM_)
 import Control.Applicative(Applicative, pure)
 import Control.Monad.Trans(MonadIO(..), MonadTrans(..))
-import Control.Monad(liftM)
 import Control.Concurrent(forkIO)
 import Control.Exception(finally, try, catch, Exception)
 import Control.Monad(forever)
@@ -64,7 +63,7 @@ instance Monad f => Monad (Loop v s f) where
 
 instance MonadTrans (Loop v s) where
   lift x =
-    Loop (\_ s -> liftM (\a -> (a, s)) x)
+    Loop (\_ s -> fmap (\a -> (a, s)) x)
 
 instance MonadIO f => MonadIO (Loop v s f) where
   liftIO =
