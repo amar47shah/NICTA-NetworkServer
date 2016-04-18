@@ -1,23 +1,25 @@
 module Network.Server.TicTacToe.Loop where
 
-import Prelude hiding (mapM_, catch)
-import System.IO(BufferMode(..))
-import Network(PortID(..), sClose, withSocketsDo, listenOn)
-import Data.IORef(IORef, newIORef, readIORef)
-import Data.Foldable(Foldable, mapM_)
-import Control.Applicative(Applicative, pure)
-import Control.Monad.Trans(MonadIO(..), MonadTrans(..))
-import Control.Concurrent(forkIO)
-import Control.Exception(finally, try, catch, Exception)
-import Control.Monad(forever)
-
 import Network.Server.Common.Accept
+import Network.Server.Common.Env
 import Network.Server.Common.HandleLens
 import Network.Server.Common.Lens
 import Network.Server.Common.Line
-import Network.Server.Common.Env
 import Network.Server.Common.Ref
+
+import Prelude hiding (mapM_, catch)
+
+import Control.Applicative(Applicative, pure)
+import Control.Concurrent(forkIO)
+import Control.Exception(finally, try, catch, Exception)
+import Control.Monad(forever)
+import Control.Monad.Trans(MonadIO(..), MonadTrans(..))
+import Data.IORef(IORef, newIORef, readIORef)
+import Data.Foldable(Foldable, mapM_)
 import Data.Set(Set)
+import Network(PortID(..), sClose, withSocketsDo, listenOn)
+import System.IO(BufferMode(..))
+
 import qualified Data.Set as S
 
 data Loop v s f a =
