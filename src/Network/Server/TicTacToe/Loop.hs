@@ -9,16 +9,16 @@ import Network.Server.Common.Ref
 
 import Prelude hiding (mapM_, catch)
 
-import Control.Applicative(Applicative, pure)
-import Control.Concurrent(forkIO)
-import Control.Exception(finally, try, catch, Exception)
-import Control.Monad(forever)
-import Control.Monad.Trans(MonadIO(..), MonadTrans(..))
-import Data.IORef(IORef, newIORef, readIORef)
-import Data.Foldable(Foldable, mapM_)
-import Data.Set(Set)
-import Network(PortID(..), sClose, withSocketsDo, listenOn)
-import System.IO(BufferMode(..))
+import Control.Applicative (Applicative, pure)
+import Control.Concurrent (forkIO)
+import Control.Exception (finally, try, catch, Exception)
+import Control.Monad (forever)
+import Control.Monad.Trans (MonadIO(..), MonadTrans(..))
+import Data.IORef (IORef, newIORef, readIORef)
+import Data.Foldable (Foldable, mapM_)
+import Data.Set (Set)
+import Network (PortID(..), sClose, withSocketsDo, listenOn)
+import System.IO (BufferMode(..))
 
 import qualified Data.Set as S
 
