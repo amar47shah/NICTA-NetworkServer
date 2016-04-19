@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 module Network.Server.TicTacToe.Loop where
 
 import Network.Server.Common.Accept
@@ -10,6 +11,7 @@ import Network.Server.Common.Ref
 import Prelude hiding (mapM_, catch)
 
 import Control.Applicative (Applicative, pure)
+import Control.Arrow (first)
 import Control.Concurrent (forkIO)
 import Control.Exception (finally, try, catch, Exception)
 import Control.Monad (forever)
@@ -22,54 +24,34 @@ import System.IO (BufferMode(..))
 
 import qualified Data.Set as S
 
-data Loop v s f a =
-  Loop (Env v -> s -> f (a, s))
+data Loop v s f a    = Loop (Env v -> s -> f (a, s))
+type IOLoop v s a    = Loop v s IO a
+type IORefLoop v s a = IOLoop (IORef v) s a
 
-type IOLoop v s a =
-  Loop v s IO a
+execLoop :: Functor f => Loop v s f a -> Env v -> s -> f a
+execLoop (Loop l) env s = fst <$> l env s
 
-type IORefLoop v s a =
-  IOLoop (IORef v) s a
-
-execLoop ::
-  Functor f =>
-  Loop v s f a
-  -> Env v
-  -> s
-  -> f a
-execLoop (Loop l) e =
-  fmap fst . l e
-
-initLoop ::
-  Functor f =>
-  (Env v -> f a)
-  -> Loop v s f a
-initLoop f =
-  Loop $ \env s -> fmap (\a -> (a, s)) . f $ env
+initLoop :: Functor f => (Env v -> f a) -> Loop v s f a
+initLoop f = Loop $ \env s -> (, s) <$> f env
 
 instance Functor f => Functor (Loop v s f) where
-  fmap f (Loop k) =
-    Loop (\env -> fmap (\(a, t) -> (f a, t)) . k env)
+  fmap f (Loop l) = Loop $ \env s -> first f <$> l env s
 
 instance Applicative f => Applicative (Loop v s f) where
-  pure = undefined
+  pure a = Loop . const $ pure . (a, )
   (<*>) = undefined
 
 instance Monad f => Monad (Loop v s f) where
-  return a =
-    Loop $ \_ s -> return (a, s)
-  Loop k >>= f =
-    Loop (\env s -> k env s >>= \(a, t) ->
-      let Loop l = f a
-      in l env t)
+  Loop l >>= k =
+    Loop $ \env s ->
+      l env s >>= \(a, s') ->
+        let Loop l' = k a in l' env s'
 
 instance MonadTrans (Loop v s) where
-  lift x =
-    Loop (\_ s -> fmap (\a -> (a, s)) x)
+  lift mx = Loop . const $ \s -> (, s) <$> mx
 
 instance MonadIO f => MonadIO (Loop v s f) where
-  liftIO =
-    lift . liftIO
+  liftIO = lift . liftIO
 
 etry ::
   Exception e =>
