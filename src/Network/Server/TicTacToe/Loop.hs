@@ -39,7 +39,9 @@ instance Functor f => Functor (Loop v s f) where
 
 instance Applicative f => Applicative (Loop v s f) where
   pure a = Loop . const $ pure . (a, )
-  (<*>) = undefined
+  Loop lf <*> Loop lx =
+    Loop $ \env s ->
+      first . fst <$> lf env s <*> lx env s
 
 instance Monad f => Monad (Loop v s f) where
   Loop l >>= k =
