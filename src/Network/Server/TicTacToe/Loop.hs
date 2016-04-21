@@ -37,11 +37,12 @@ initLoop f = Loop $ \env s -> (, s) <$> f env
 instance Functor f => Functor (Loop v s f) where
   fmap f (Loop l) = Loop $ \env s -> first f <$> l env s
 
-instance Applicative f => Applicative (Loop v s f) where
+instance Monad f => Applicative (Loop v s f) where
   pure a = Loop . const $ pure . (a, )
   Loop lf <*> Loop lx =
     Loop $ \env s ->
-      first . fst <$> lf env s <*> lx env s
+      lf env s >>= \(f, s') ->
+        first f <$> lx env s'
 
 instance Monad f => Monad (Loop v s f) where
   Loop l >>= k =
