@@ -5,7 +5,6 @@ import Network.Server.Chat.Loop
 import Data.Maybe(fromMaybe)
 import Data.Foldable(msum)
 import Data.IORef(atomicModifyIORef)
-import Control.Applicative((<$), (<$>))
 import Control.Monad.Trans(MonadIO(..))
 
 type Chat a =

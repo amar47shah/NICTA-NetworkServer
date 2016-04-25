@@ -13,7 +13,6 @@ import Data.IORef(readIORef, atomicModifyIORef)
 import Data.Maybe(fromMaybe)
 import Data.Foldable(asum, find)
 import Data.Set(Set)
-import Control.Applicative((<$), (<$>))
 import System.IO(hGetLine, hPutStrLn)
 
 type FinishedGames =

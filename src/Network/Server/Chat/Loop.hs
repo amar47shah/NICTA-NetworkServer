@@ -1,11 +1,10 @@
 module Network.Server.Chat.Loop where
 
-import Prelude hiding (mapM_, catch)
+import Prelude hiding (mapM_)
 import Network(PortID(..), sClose, withSocketsDo, listenOn)
 import System.IO(BufferMode(..))
 import Data.IORef(IORef, newIORef, readIORef)
-import Data.Foldable(Foldable, mapM_)
-import Control.Applicative(Applicative, pure)
+import Data.Foldable(mapM_)
 import Control.Concurrent(forkIO)
 import Control.Exception(finally, try, catch, Exception)
 import Control.Monad(forever)
