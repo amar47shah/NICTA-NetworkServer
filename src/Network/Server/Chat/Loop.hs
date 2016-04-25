@@ -1,10 +1,10 @@
 module Network.Server.Chat.Loop where
 
 import Network.Server.Common.Accept
+import Network.Server.Common.Env
 import Network.Server.Common.HandleLens
 import Network.Server.Common.Lens
 import Network.Server.Common.Line
-import Network.Server.Common.Env
 import Network.Server.Common.Ref
 
 import Prelude hiding (mapM_)
