@@ -23,9 +23,9 @@ import System.IO (BufferMode(..))
 
 import qualified Data.Set as S
 
-data Loop v s f a    = Loop (Env v -> s -> f (a, s))
-type IOLoop v s a    = Loop v s IO a
-type IORefLoop v s a = IOLoop (IORef v) s a
+data Loop      v s f a = Loop (Env v -> s -> f (a, s))
+type IOLoop    v s   a = Loop v s IO a
+type IORefLoop v s   a = IOLoop (IORef v) s a
 
 execLoop :: Functor f => Loop v s f a -> Env v -> s -> f a
 execLoop (Loop l) env s = fst <$> l env s

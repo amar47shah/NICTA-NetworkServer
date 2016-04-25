@@ -21,40 +21,28 @@ import System.IO(BufferMode(..))
 
 import qualified Data.Set as S
 
-data Loop v f a =
-  Loop (Env v -> f a)
-
-type IOLoop v a =
-  Loop v IO a
-
-type IORefLoop v a =
-  IOLoop (IORef v) a
+data Loop      v f a = Loop (Env v -> f a)
+type IOLoop    v   a = Loop v IO a
+type IORefLoop v   a = IOLoop (IORef v) a
 
 instance Functor f => Functor (Loop v f) where
-  fmap f (Loop k) =
-    Loop (fmap f . k)
+  fmap f (Loop l) = Loop $ fmap f . l
 
 instance Applicative f => Applicative (Loop v f) where
-  pure =
-    Loop . pure . pure
-  Loop f <*> Loop x =
-    Loop (\a -> f a <*> x a)
+  pure = Loop . pure . pure
+  Loop lf <*> Loop lx = Loop (\a -> lf a <*> lx a)
 
 instance Monad f => Monad (Loop v f) where
-  return =
-    Loop . return . return
-  Loop k >>= f =
-    Loop (\v -> k v >>= \a ->
-      let Loop l = f a
-      in l v)
+  Loop l >>= k =
+    Loop $ \v ->
+      l v >>= \a ->
+        let Loop l' = k a in l' v
 
 instance MonadTrans (Loop v) where
-  lift =
-    Loop . const
+  lift = Loop . const
 
 instance MonadIO f => MonadIO (Loop v f) where
-  liftIO =
-    lift . liftIO
+  liftIO = lift . liftIO
 
 etry ::
   Exception e =>
