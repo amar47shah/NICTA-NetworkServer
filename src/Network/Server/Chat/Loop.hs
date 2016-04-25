@@ -1,22 +1,24 @@
 module Network.Server.Chat.Loop where
 
-import Prelude hiding (mapM_)
-import Network(PortID(..), sClose, withSocketsDo, listenOn)
-import System.IO(BufferMode(..))
-import Data.IORef(IORef, newIORef, readIORef)
-import Data.Foldable(mapM_)
-import Control.Concurrent(forkIO)
-import Control.Exception(finally, try, catch, Exception)
-import Control.Monad(forever)
-import Control.Monad.Trans(MonadTrans(..), MonadIO(..))
-
 import Network.Server.Common.Accept
 import Network.Server.Common.HandleLens
 import Network.Server.Common.Lens
 import Network.Server.Common.Line
 import Network.Server.Common.Env
 import Network.Server.Common.Ref
+
+import Prelude hiding (mapM_)
+
+import Control.Concurrent(forkIO)
+import Control.Exception(finally, try, catch, Exception)
+import Control.Monad(forever)
+import Control.Monad.Trans(MonadTrans(..), MonadIO(..))
+import Data.Foldable(mapM_)
+import Data.IORef(IORef, newIORef, readIORef)
 import Data.Set(Set)
+import Network(PortID(..), sClose, withSocketsDo, listenOn)
+import System.IO(BufferMode(..))
+
 import qualified Data.Set as S
 
 data Loop v f a =
