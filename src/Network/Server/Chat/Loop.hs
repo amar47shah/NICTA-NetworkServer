@@ -76,8 +76,13 @@ perClient ::
   IOLoop v x -- client accepted (post)
   -> (String -> IOLoop v a) -- read line from client
   -> IOLoop v ()
-perClient =
-  error "Loop.perClient"
+perClient q f =
+  let lp = do k <- etry lGetLine
+              case k of Left e -> xprint e
+                        Right [] -> lp
+                        Right l -> f l >> lp
+  in do _ <- q
+        lp
 
 loop ::
   IO w -- server initialise
