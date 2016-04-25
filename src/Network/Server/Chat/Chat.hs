@@ -49,8 +49,7 @@ chatCommand z =
                              , Incr <$ trimPrefixThen "INCR" z
                              ]
 
-process ::
-  ChatCommand
-  -> Chat ()
-process =
-  error "Chat.process"
+process :: ChatCommand -> Chat ()
+process (Chat _)    = error "Chat.process (Chat _)"
+process Incr        = error "Chat.process Incr"
+process (Unknown _) = error "Chat.process (Unknown _)"
