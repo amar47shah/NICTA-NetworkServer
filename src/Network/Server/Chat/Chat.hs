@@ -42,5 +42,8 @@ chatCommand z = Unknown z `fromMaybe` msum [ Chat <$> trimPrefixThen "CHAT" z
 
 process :: ChatCommand -> Chat ()
 process (Chat _)    = void readEnvval
-process Incr        = void incr
+process Incr        = void $ incr >> readIOEnvval >>= printCounter
 process (Unknown _) = error "Chat.process (Unknown _)"
+
+printCounter :: Show a => a -> IOLoop b ()
+printCounter = pPutStrLn . ("> counter is at " ++) . show
