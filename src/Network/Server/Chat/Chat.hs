@@ -41,6 +41,6 @@ chatCommand z = Unknown z `fromMaybe` msum [ Chat <$> trimPrefixThen "CHAT" z
                                            ]
 
 process :: ChatCommand -> Chat ()
-process (Chat _)    = error "Chat.process (Chat _)"
+process (Chat _)    = void readEnvval
 process Incr        = void incr
 process (Unknown _) = error "Chat.process (Unknown _)"
