@@ -2,10 +2,11 @@ module Network.Server.Chat.Chat where
 
 import Network.Server.Common.Line
 import Network.Server.Chat.Loop
-import Data.Maybe(fromMaybe)
-import Data.Foldable(msum)
-import Data.IORef(atomicModifyIORef)
-import Control.Monad.Trans(MonadIO(..))
+
+import Control.Monad.Trans (MonadIO(..))
+import Data.Maybe (fromMaybe)
+import Data.Foldable (msum)
+import Data.IORef (atomicModifyIORef)
 
 type Chat a =
   IORefLoop Integer a
