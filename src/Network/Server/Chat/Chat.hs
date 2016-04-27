@@ -4,6 +4,7 @@ import Network.Server.Common.Line
 import Network.Server.Chat.Loop
 
 import Control.Arrow ((&&&))
+import Control.Monad (void)
 import Control.Monad.Trans (MonadIO(..))
 import Data.Maybe (fromMaybe)
 import Data.Foldable (msum)
@@ -41,5 +42,5 @@ chatCommand z = Unknown z `fromMaybe` msum [ Chat <$> trimPrefixThen "CHAT" z
 
 process :: ChatCommand -> Chat ()
 process (Chat _)    = error "Chat.process (Chat _)"
-process Incr        = error "Chat.process Incr"
+process Incr        = void incr
 process (Unknown _) = error "Chat.process (Unknown _)"
